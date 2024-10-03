@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-service
+spec:
+  replicas: 1
+  # strategy:
+  #   type: Recreate
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: gateway-service
+  template:
+    metadata:
+      labels:
+        app: gateway-service
+    spec:
+      containers:
+        - image: pimmarde07/gateway-service-10:latest
+          name: gateway-service
+          ports:
+            - containerPort: 8087
+              protocol: TCP
+          env:
+            - name: SESSION_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: SESSION_SERVICE_HOST
+            - name: SESSION_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: SESSION_SERVICE_PORT
+            - name: HOTEL_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: HOTEL_SERVICE_HOST
+            - name: HOTEL_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: HOTEL_SERVICE_PORT
+            - name: BOOKING_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: BOOKING_SERVICE_HOST
+            - name: BOOKING_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: BOOKING_SERVICE_PORT
+            - name: PAYMENT_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: PAYMENT_SERVICE_HOST
+            - name: PAYMENT_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: PAYMENT_SERVICE_PORT
+            - name: LOYALTY_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: LOYALTY_SERVICE_HOST
+            - name: LOYALTY_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: LOYALTY_SERVICE_PORT
+            - name: REPORT_SERVICE_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: REPORT_SERVICE_HOST
+            - name: REPORT_SERVICE_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: configmap
+                  key: REPORT_SERVICE_PORT
