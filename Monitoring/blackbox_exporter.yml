@@ -1,0 +1,14 @@
+modules:
+  http_2xx:
+    prober: http
+    timeout: 5s
+    http:
+      method: GET
+      valid_http_versions: [ "1.0", "1.1", "2" ]
+      valid_http_methods: [ "GET" ]
+      valid_http_status_codes: [ "200", "301" ]
+      follow_redirects: true
+      enable_http2: true
+    dns:
+      ip_protocol_fallback: true
+      recursion_desired: true

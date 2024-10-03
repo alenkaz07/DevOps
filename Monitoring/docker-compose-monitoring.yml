@@ -1,0 +1,98 @@
+version: "3.8"
+
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./alerts.yml:/etc/prometheus/alerts.yml
+    ports:
+      - "9090:9090"
+    networks:
+      - webservice_overlay_network
+
+  node_exporter:
+    image: prom/node-exporter:latest
+    ports:
+      - "9100:9100"
+    deploy:
+      mode: global
+    networks:
+      - webservice_overlay_network
+
+  blackbox_exporter:
+    image: prom/blackbox-exporter:latest
+    ports:
+      - "9115:9115"
+    volumes:
+      - ./blackbox_exporter.yml:/etc/blackbox_exporter/blackbox_exporter.yml
+    dns:
+      - 8.8.8.8
+    networks:
+      - webservice_overlay_network
+
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:latest
+    ports:
+    - 8080:8080
+    volumes:
+    - /:/rootfs:ro
+    - /var/run:/var/run:rw
+    - /sys:/sys:ro
+    - /var/lib/docker/:/var/lib/docker:ro
+    deploy:
+      mode: global
+    networks:
+      - webservice_overlay_network
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+    volumes:
+      - grafana-data:/var/lib/grafana
+    logging:
+      driver: json-file
+    networks:
+      - webservice_overlay_network
+
+  loki:
+    image: grafana/loki:latest
+    command:
+      - -config.file=/etc/loki/loki-config.yaml
+    ports:
+      - "3100:3100"
+    volumes:
+      - loki-data:/loki
+    configs:
+      - source: loki_config
+        target: /etc/loki/loki-config.yaml
+    logging:
+      driver: json-file
+    networks:
+      - webservice_overlay_network
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    networks:
+      - webservice_overlay_network
+
+networks:
+  webservice_overlay_network:
+    external: true
+
+volumes:
+  loki-data:
+    driver: local
+  grafana-data:
+    driver: local
+configs:
+  loki_config:
+    external: true

@@ -1,0 +1,38 @@
+groups:
+  - name: Alerts
+    rules:
+      - alert: LowMemory
+        expr: node_memory_MemAvailable_bytes < 100 * 1024 * 1024
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Доступная память меньше 100 МБ на {{ $labels.instance }}."
+          description: "Доступная память на узле {{ $labels.instance }} упала ниже 100 МБ."
+
+      - alert: HighMemoryUsage
+        expr: sum(container_memory_usage_bytes{container_label_com_docker_swarm_service_name!=""}) > 1 * 1024 * 1024 * 1024
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Затраченная RAM больше 1 ГБ."
+          description: "Общее использование RAM для стеков превышает 1 ГБ."
+
+      - alert: HighCPUUsage
+        expr: sum(rate(container_cpu_usage_seconds_total{container_label_com_docker_stack_namespace="webservice"}[5m])) by (container_label_com_docker_service) > 0.1
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Использование CPU по сервису превышает 10%."
+          description: "Процент использования CPU для сервисов в стеке webservice превышает 10%."
+
+      - alert: TestAlert
+        expr: vector(1)
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Это тестовое оповещение."
+          description: "Это тестовое оповещение для проверки конфигурации Alertmanager."

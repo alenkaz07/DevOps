@@ -1,0 +1,164 @@
+version: "3.8"
+
+services:
+
+  database:
+    image: "pimmarde07/database-9:latest"
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./services/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - overlay_network
+
+  rabbitmq:
+    image: "pimmarde07/rabbitmq-9:latest"
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+    networks:
+      - overlay_network
+
+  session-service:
+    image: "pimmarde07/session-service-9:latest"
+    depends_on:
+      - database
+    # expose:
+    #   - 8081
+    ports:
+      - 8081:8081
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://localhost:3100/loki/api/v1/push"
+        loki-retries: "5"
+        loki-batch-size: "400"
+    networks:
+      - overlay_network
+
+  hotel-service:
+    image: "pimmarde07/hotel-service-9:latest"
+    ports:
+      - 8082:8082
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://localhost:3100/loki/api/v1/push"
+        loki-retries: "5"
+        loki-batch-size: "400"
+    depends_on:
+      - database
+    networks:
+      - overlay_network
+
+  payment-service:
+    image: "pimmarde07/payment-service-9:latest"
+    ports:
+      - 8084:8084
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://localhost:3100/loki/api/v1/push"
+        loki-retries: "5"
+        loki-batch-size: "400"
+    depends_on:
+      - database
+    networks:
+      - overlay_network
+
+  loyalty-service:
+    image: "pimmarde07/loyalty-service-9:latest"
+    ports:
+      - 8085:8085
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://localhost:3100/loki/api/v1/push"
+        loki-retries: "5"
+        loki-batch-size: "400"
+    depends_on:
+      - database
+    networks:
+      - overlay_network
+
+  report-service:
+    image: "pimmarde07/report-service-9:latest"
+    ports:
+      - 8086:8086
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://localhost:3100/loki/api/v1/push"
+        loki-retries: "5"
+        loki-batch-size: "400"
+    depends_on:
+      - database
+      - rabbitmq
+    networks:
+      - overlay_network
+
+  booking-service:
+    image: "pimmarde07/booking-service-9:latest"
+    ports:
+      - 8083:8083
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://localhost:3100/loki/api/v1/push"
+        loki-retries: "5"
+        loki-batch-size: "400"
+    depends_on:
+      - database
+      - rabbitmq
+    networks:
+      - overlay_network
+
+  gateway-service:
+    image: "pimmarde07/gateway-service-9:latest"
+    logging:
+      driver: loki
+      options:
+        loki-url: "http://localhost:3100/loki/api/v1/push"
+        loki-retries: "5"
+        loki-batch-size: "400"
+    depends_on:
+      - session-service
+      - hotel-service
+      - booking-service
+      - payment-service
+      - loyalty-service
+      - report-service
+    # expose:
+    #   - 8087
+    ports:
+      - 8087:8087
+    networks:
+      - overlay_network
+
+  # nginx:
+  #   image: nginx:latest
+  #   ports:
+  #     - 80:80
+  #     - 8081:8081
+  #     - 8087:8087
+  #   volumes:
+  #     - ./nginx.conf:/etc/nginx/nginx.conf
+  #   depends_on:
+  #     - gateway-service
+  #     - session-service
+  #   networks:
+  #     - overlay_network
+
+networks:
+  overlay_network:
+    driver: overlay
+
+volumes:
+  postgres_data:
+  rabbitmq-data:
