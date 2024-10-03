@@ -1,0 +1,5 @@
+replicaCount: 1
+
+gatewayservice:
+  app: gateway-service
+  replicaCount: 2

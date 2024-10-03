@@ -1,0 +1,23 @@
+resources:
+  - ../../base
+  - configMap.yaml
+  - secret.yaml
+patches:
+  - path: replicas-patch.yaml
+    target:
+      group: apps
+      version: v1
+      kind: Deployment
+      name: gateway-service
+  - path: configMap.yaml
+    target:
+      group: ""
+      version: v1
+      kind: ConfigMap
+      name: configmap
+  - path: secret.yaml
+    target:
+      group: ""
+      version: v1
+      kind: Secret
+      name: app-secrets
