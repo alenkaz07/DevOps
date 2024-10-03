@@ -13,8 +13,6 @@
 
 - [Vagrantfile](./Vagrantfile)
 
-<img src="./screen/1.1.png" alt="Виртуальные машины запущены">
-
 ![](./screen/1.1.png "Виртуальные машины запущены")
 
 > *Рисунок 1.* Виртуальные машины запущены
@@ -224,36 +222,3 @@ helm upgrade webservice ./webservice --namespace webservicespace
 - **Helm** предоставил более мощное решение для управления шаблонами, зависимостями и версиями.
 
 Оба инструмента эффективны, и выбор зависит от требований проекта: *Kustomize* для простых конфигураций, *Helm* — для сложных приложений.
-
-<style>
-   .task {
-      padding-top: 10px;
-      border: 1px solid orange;
-      border-radius: 10px;
-      transition: 0.3s;
-   }
-
-   .task:hover {
-      background: rgba(241, 174, 43, 0.1);
-   }
-
-   img {
-      width: 500px;
-      transition: 0.2s;
-      cursor: pointer;
-      border-radius: 10px;
-      opacity: 0.8;
-      border: 1px solid gray;
-   }
-
-   img:hover {
-      margin: 10px;
-      width: 600px;
-      border: 1px solid orange;
-      opacity: 1;
-   }
-
-   details {
-      cursor: pointer;
-   }
-</style>
