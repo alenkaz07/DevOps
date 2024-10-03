@@ -1,0 +1,46 @@
+---
+- name: Ensure apt cache is updated
+  apt:
+    update_cache: yes
+
+- name: Install PostgreSQL and psycopg2
+  apt:
+    name:
+      - postgresql
+      - python3-psycopg2
+    state: present
+
+- name: Change pg_hba.conf to use md5 authentication
+  lineinfile:
+    path: /etc/postgresql/14/main/pg_hba.conf
+    regexp: '^local\s+all\s+all\s+peer'
+    line: 'local   all             all                                     md5'
+
+- name: Ensure pg_hba.conf is configured to allow external connections
+  lineinfile:
+    path: /etc/postgresql/14/main/pg_hba.conf
+    line: "host    all             all             0.0.0.0/0               md5"
+    create: yes
+    state: present
+    insertafter: '^# IPv6 local connections:'
+
+- name: Set listen_addresses in postgresql.conf
+  lineinfile:
+    path: /etc/postgresql/14/main/postgresql.conf
+    regexp: '^#listen_addresses'
+    line: "listen_addresses = '*'"
+    state: present
+
+- name: Set PostgreSQL user password
+  command: sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
+
+- name: Ensure PostgreSQL is started and enabled
+  service:
+    name: postgresql
+    state: started
+    enabled: yes
+
+- name: Restart PostgreSQL to apply configuration changes
+  service:
+    name: postgresql
+    state: restarted

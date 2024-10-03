@@ -1,0 +1,82 @@
+version: "3.8"
+
+services:
+
+  database:
+    image: "pimmarde07/database:latest"
+    # ports:
+    #   - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./services/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  rabbitmq:
+    image: "pimmarde07/rabbitmq:latest"
+    # ports:
+    #   - 5672:5672
+    #   - 15672:15672
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
+  session-service:
+    image: "pimmarde07/session-service:latest"
+    ports:
+      - 8081:8081
+    depends_on:
+      - database
+
+  hotel-service:
+    image: "pimmarde07/hotel-service:latest"
+    # ports:
+    #   - 8082:8082
+    depends_on:
+      - database
+
+  payment-service:
+    image: "pimmarde07/payment-service:latest"
+    # ports:
+    #   - 8084:8084
+    depends_on:
+      - database
+
+  loyalty-service:
+    image: "pimmarde07/loyalty-service:latest"
+    # ports:
+    #   - 8085:8085
+    depends_on:
+      - database
+
+  report-service:
+    image: "pimmarde07/report-service:latest"
+    # ports:
+    #   - 8086:8086
+    depends_on:
+      - database
+      - rabbitmq
+
+  booking-service:
+    image: "pimmarde07/booking-service:latest"
+    # ports:
+    #   - 8083:8083
+    depends_on:
+      - database
+      - rabbitmq
+
+  gateway-service:
+    image: "pimmarde07/gateway-service:latest"
+    ports:
+      - 8087:8087
+    depends_on:
+      - session-service
+      - hotel-service
+      - booking-service
+      - payment-service
+      - loyalty-service
+      - report-service
+
+volumes:
+  postgres_data:
+  rabbitmq-data:

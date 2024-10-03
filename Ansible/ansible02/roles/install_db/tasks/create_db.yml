@@ -1,0 +1,9 @@
+---
+- name: Create database
+  postgresql_db:
+    name: hotels_db
+    state: present
+    login_user: postgres
+    login_password: postgres
+    login_host: localhost
+    port: 5432

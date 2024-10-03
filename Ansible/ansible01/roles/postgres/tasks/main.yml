@@ -1,0 +1,6 @@
+---
+- name: Install PostgreSQL and start
+  include_tasks: install_postgres.yml
+
+- name: Create database and table
+  include_tasks: create_database.yml

@@ -1,0 +1,27 @@
+---
+- name: Create database
+  postgresql_db:
+    name: mydatabase
+    state: present
+    login_user: postgres
+    login_password: postgres
+    login_host: localhost
+    port: 5432
+
+- name: Create table and insert data
+  postgresql_query:
+    db: mydatabase
+    query: |
+      DROP TABLE IF EXISTS test;
+      CREATE TABLE test (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(50)
+      );
+      INSERT INTO test (name) VALUES
+        ('Alice'),
+        ('Nataly'),
+        ('Denis');
+    login_user: postgres
+    login_password: postgres
+    login_host: localhost
+    port: 5432

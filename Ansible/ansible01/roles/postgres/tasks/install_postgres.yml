@@ -1,0 +1,23 @@
+---
+- name: Install PostgreSQL and psycopg2
+  apt:
+    name:
+      - postgresql
+      - python3-psycopg2
+    state: present
+
+- name: Change pg_hba.conf to use md5 authentication
+  lineinfile:
+    path: /etc/postgresql/14/main/pg_hba.conf
+    regexp: '^local\s+all\s+all\s+peer'
+    line: 'local   all             all                                     md5'
+
+- name: Set PostgreSQL user password
+  # become_user: postgres
+  command: sudo -u postgres psql -c "ALTER USER postgres PASSWORD 'postgres';"
+
+- name: Start PostgreSQL service
+  service:
+    name: postgresql
+    state: started
+    enabled: yes

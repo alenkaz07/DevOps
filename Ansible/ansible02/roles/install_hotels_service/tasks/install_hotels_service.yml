@@ -1,0 +1,51 @@
+---
+- name: Install OpenJDK 8
+  apt:
+    name: openjdk-8-jdk
+    state: present
+    update_cache: yes
+
+- name: Install Maven
+  apt:
+    name: maven
+    state: present
+    update_cache: yes
+
+- name: Copy service source code
+  copy:
+    src: ../services/hotel-service
+    dest: /opt/
+    mode: '0755'
+    # recurse: yes
+
+- name: Build hotel-service application
+  shell: |
+    cd /opt/hotel-service
+    ./mvnw dependency:go-offline
+    ./mvnw package -DskipTests
+  args:
+    chdir: /opt/hotel-service
+    creates: /opt/hotel-service/target/hotel-service.jar
+
+- name: Set global environment variables
+  lineinfile:
+    path: /etc/environment
+    line: "{{ item }}"
+    create: yes
+  with_items:
+    - "POSTGRES_HOST={{ postgres_host }}"
+    - "POSTGRES_PORT={{ postgres_port }}"
+    - "POSTGRES_DB={{ postgres_db }}"
+    - "POSTGRES_USER={{ postgres_user }}"
+    - "POSTGRES_PASSWORD={{ postgres_password }}"
+
+- name: Refresh environment variables
+  shell: source /etc/environment
+  args:
+    executable: /bin/bash
+
+- name: Start Hotels service
+  shell: |
+    java -jar /opt/hotel-service/target/*.jar &
+  args:
+    executable: /bin/bash

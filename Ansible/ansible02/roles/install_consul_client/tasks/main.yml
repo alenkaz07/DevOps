@@ -1,0 +1,6 @@
+---
+- name: Install Consul
+  include_tasks: install_consul.yml
+
+- name: Copy consul-client and start services
+  include_tasks: copy_client_and_start.yml

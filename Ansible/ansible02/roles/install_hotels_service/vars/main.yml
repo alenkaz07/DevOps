@@ -1,0 +1,6 @@
+---
+postgres_host: "192.168.56.12"
+postgres_port: "5432"
+postgres_db: "hotels_db"
+postgres_user: "postgres"
+postgres_password: "postgres"

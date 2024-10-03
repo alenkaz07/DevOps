@@ -1,0 +1,13 @@
+---
+- name: Setup node01
+  hosts: node01
+  become: yes
+  roles:
+    - application
+
+- name: Setup node02
+  hosts: node02
+  become: yes
+  roles:
+    - apache
+    - postgres

@@ -1,0 +1,33 @@
+---
+- name: Setup nodes
+  hosts: node01
+  become: yes
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Ensure docker is installed
+      apt:
+        name: docker.io
+        state: present
+
+    - name: Ensure docker-compose is installed
+      apt:
+        name: docker-compose
+        state: present
+
+    - name: Copy docker-compose file
+      copy:
+        src: /home/vagrant/src/docker-compose.yml
+        dest: /home/vagrant/docker-compose.yml
+
+    - name: Copy service files
+      copy:
+        src: /home/vagrant/src/services/
+        dest: /home/vagrant/services/
+
+    - name: Deploy microservice
+      command: docker-compose up -d
+      args:
+        chdir: /home/vagrant/

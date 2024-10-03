@@ -1,0 +1,18 @@
+---
+# - name: Copy Consul server config
+#   copy:
+#     src: consul_server.hcl
+#     dest: /etc/consul.d/consul_server.hcl
+#     owner: root
+#     group: root
+#     mode: '0644'
+
+- name: Reload systemd to apply changes
+  systemd:
+    daemon_reload: yes
+
+- name: Ensure Consul service is started and enabled
+  systemd:
+    name: consul
+    state: started
+    enabled: yes

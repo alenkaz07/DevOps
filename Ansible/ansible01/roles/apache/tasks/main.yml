@@ -1,0 +1,6 @@
+---
+- name: Install Apache
+  include_tasks: install_apache.yml
+
+- name: Start Apache
+  include_tasks: start_apache.yml

@@ -1,0 +1,6 @@
+---
+- name: Copy docker-compose
+  include_tasks: copy_docker-compose.yml
+
+- name: Deploy microservice
+  include_tasks: deploy_microservice.yml

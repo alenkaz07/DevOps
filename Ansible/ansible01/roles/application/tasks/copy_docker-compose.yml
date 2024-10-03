@@ -1,0 +1,5 @@
+---
+- name: Copy docker-compose
+  copy:
+    src: /home/vagrant/src/docker-compose.yml
+    dest: /home/vagrant/docker-compose.yml
