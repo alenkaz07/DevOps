@@ -191,7 +191,7 @@ helm install webservice ./webservice --namespace webservicespace
 
 Внесены изменения в `values.yaml`, и выполнено обновление с помощью `helm upgrade`:
 
-```diff
+``` yaml
 gatewayservice:
   app: gateway-service
   replicaCount: 2
