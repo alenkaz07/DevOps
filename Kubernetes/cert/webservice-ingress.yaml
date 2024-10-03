@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: webservice-ingress
+  namespace: default
+  annotations:
+    cert-manager.io/issuer: selfsigned-issuer  # Указание на использование самоподписанного Issuer
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    kubernetes.io/ingress.class: "nginx"  # Указание на использование Nginx контроллера через аннотацию
+spec:
+  tls:
+  - hosts:
+    - webservice.local
+    secretName: selfsigned-cert-secret  # Секрет, где хранится сертификат
+  rules:
+  - host: webservice.local
+    http:
+      paths:
+      - path: /session
+        pathType: Prefix
+        backend:
+          service:
+            name: session-service
+            port:
+              number: 8081
+      - path: /gateway
+        pathType: Prefix
+        backend:
+          service:
+            name: gateway-service
+            port:
+              number: 8087

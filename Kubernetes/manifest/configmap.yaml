@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configmap
+data:
+  DATABASE_HOST: "database"
+  RABBITMQ_HOST: "rabbitmq"
+  SESSION_SERVICE_HOST: "session-service"
+  HOTEL_SERVICE_HOST: "hotel-service"
+  PAYMENT_SERVICE_HOST: "payment-service"
+  LOYALTY_SERVICE_HOST: "loyalty-service"
+  REPORT_SERVICE_HOST: "report-service"
+  BOOKING_SERVICE_HOST: "booking-service"
+  GATEWAY_SERVICE_HOST: "gateway-service"
+
+  DATABASE_PORT: "5432"
+  RABBITMQ_PORT: "5672"
+  SESSION_SERVICE_PORT: "8081"
+  HOTEL_SERVICE_PORT: "8082"
+  PAYMENT_SERVICE_PORT: "8084"
+  LOYALTY_SERVICE_PORT: "8085"
+  REPORT_SERVICE_PORT: "8086"
+  BOOKING_SERVICE_PORT: "8083"
+  GATEWAY_SERVICE_PORT: "8087"
+
+  DATABASE_SESSION: "reservations_db"
+  DATABASE_HOTELS: "hotels_db"
+  DATABASE_PAYMENT: "payments_db"
+  DATABASE_LOYALTY: "balances_db"
+  DATABASE_REPORT: "statistics_db"
+  DATABASE_BOOKING: "reservations_db"
+
+  RABBIT_MQ_USER: "guest"
+  RABBIT_MQ_PASSWORD: "guest"
+  RABBIT_MQ_QUEUE_NAME: "messagequeue"
+  RABBIT_MQ_EXCHANGE: "messagequeue-exchange"
