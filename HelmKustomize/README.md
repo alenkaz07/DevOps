@@ -191,9 +191,11 @@ helm install webservice ./webservice --namespace webservicespace
 
 Внесены изменения в `values.yaml`, и выполнено обновление с помощью `helm upgrade`:
 
-\+ {+ gatewayservice: +}<br>
-\+ {+   app: gateway-service +}<br>
-\+ {+   replicaCount: 2+}
+```diff
+gatewayservice:
+  app: gateway-service
+  replicaCount: 2
+```
 
 ``` bash
 helm upgrade webservice ./webservice --namespace webservicespace
